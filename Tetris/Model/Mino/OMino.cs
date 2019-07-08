@@ -19,9 +19,18 @@ namespace Tetris.Model.Mino
             this.body.Add(new Dim2D(1, 0));
             this.body.Add(new Dim2D(1, 1));
         }
-        
 
         public override Minos rotateClockwise()
+        {
+            return rotate();
+        }
+
+        public override Minos rotateCounterClockwise()
+        {
+            return rotate();
+        }
+
+        private Minos rotate()
         {
             OMino res = new OMino();
             res.setBody(this.body);

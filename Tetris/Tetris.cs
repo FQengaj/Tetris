@@ -70,7 +70,7 @@ namespace Tetris
                         break;
                 }
             }
-            if (e.KeyCode == Keys.P)
+            else if (e.KeyCode == Keys.P)
             {
                 if (pause)
                 {
@@ -83,6 +83,18 @@ namespace Tetris
                     MinoMovement.Stop();
                 }
                 pausePanel.Visible = pause;
+            }
+            else if(e.KeyCode == Keys.R)
+                {
+                restartGame();
+                updateGhost();
+                updatePoints();
+
+                this.playField.Invalidate();
+                this.HoldField.Invalidate();
+                this.NextField1.Invalidate();
+                this.NextField2.Invalidate();
+                this.NextField3.Invalidate();
             }
             else if (!pause)
             {
@@ -124,7 +136,7 @@ namespace Tetris
                         GameLoop.Start();
                         return;
                     }
-                    if (e.Shift)
+                    if (e.Alt || e.Shift)
                     {
                         while (true)
                         {
@@ -153,7 +165,7 @@ namespace Tetris
                         GameLoop.Start();
                         return;
                     }
-                    if (e.Shift)
+                    if (e.Alt || e.Shift)
                     {
                         while (true)
                         {
@@ -175,17 +187,30 @@ namespace Tetris
                 else if (e.KeyCode == Keys.Up)
                 {
                     GameLoop.Stop();
-                    Minos rotate = this.model.rotateMino();
-                    if (true/*isValid(rotate)*/)
-                    {   
-                        this.model.setCurrMino(rotate);
-                        updateGhost();
-                        changedPlayField = true;
-                    }
+                    Minos rotate = null;
+                    if (!e.Alt && !e.Shift)
+                        rotate = this.model.rotateMinoCounterClockwise();
                     else
-                    {
+                        rotate = this.model.rotateMinoClockwise();
 
-                    }//move mino to a valid Direction i.e. if it is out left move it to the right.
+                    Dim2D savety = boundsCheck(rotate);
+                    // move mino to a valid Direction i.e. 
+                    // if it is out left move it to the right.
+                    rotate.moveTo(savety);
+
+                    for (int i = 0; i < rotate.body.Count; i++)
+                    {
+                        if (model.getBlockedPos().Contains(rotate.body[i]))
+                        {
+                            rotate.moveTo(new Dim2D(0, -1));
+                            i = 0;
+                        }
+                    }// move mino up from glitch in to minos
+
+                    this.model.setCurrMino(rotate);
+                    updateGhost();
+                    changedPlayField = true;
+                   
                 } // Rotate Mino
                 else  if (e.KeyCode == Keys.Space){
 
@@ -205,17 +230,8 @@ namespace Tetris
                         changedSideField = true;
                     }
                 } // Hold Mino
-                else if (e.KeyCode == Keys.R)
-                {
-                    restartGame();
-                    updateGhost();
-                    updatePoints();
-                    changedPlayField = true;
-                    changedSideField = true;
-                }
                 if (changedPlayField)
-                {
-
+                { 
                     this.playField.Invalidate();
                     if (changedSideField)
                     {
@@ -231,6 +247,30 @@ namespace Tetris
                 }
             }
             
+        }
+
+        private Dim2D boundsCheck(Minos rotate)
+        {
+            Dim2D problem = new Dim2D(0,0);
+            foreach (Dim2D pos in rotate.getBody())
+            {
+                if (pos.x >= this.playField.ColumnCount && pos.x > problem.x)
+                {
+                        problem.x = this.playField.ColumnCount - pos.x -1;
+
+                }
+                else if (pos.x < 0 && pos.x < problem.x)
+                {
+                    problem.x = -pos.x;
+                }
+
+                if(pos.y >= this.playField.RowCount && pos.y > problem.y)
+                {
+                    problem.y = (pos.y - this.playField.RowCount)+1;
+                }
+            }
+
+            return problem;
         }
 
         private String strOf(ori oldOri)

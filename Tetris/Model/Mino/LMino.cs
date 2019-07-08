@@ -19,53 +19,53 @@ namespace Tetris.Model.Mino
             this.body.Add(new Dim2D(1, 1));
             this.body.Add(new Dim2D(0, 1));
         }
-        
 
         public override Minos rotateClockwise()
         {
+            return rotate(true);
+        }
+
+        public override Minos rotateCounterClockwise()
+        {
+            return rotate(false);
+        }
+
+        private Minos rotate(bool direction)
+        {
+            ori newori = getNextOrientation(direction);
+
             LMino result = new LMino();
             List<Dim2D> newBody = Clone(this.body);
 
-            ori newori = ori.N;
-
-            
             Dim2D fixpoint = this.body[2];
-            switch (this.orient)
+            switch (newori)
             {
-                case ori.N:
-                    // now rotate 90° clockwise
-
+                case ori.E:
                     newBody[0].set(fixpoint.x + 1, fixpoint.y + 1);
                     newBody[1].set(fixpoint.x, fixpoint.y + 1);
                     newBody[3].set(fixpoint.x, fixpoint.y - 1);
 
-                    newori = ori.E;
                     break;
-                case ori.E:
+                case ori.S:
 
                     newBody[0].set(fixpoint.x - 1, fixpoint.y + 1);
                     newBody[1].set(fixpoint.x - 1, fixpoint.y);
                     newBody[3].set(fixpoint.x + 1, fixpoint.y);
-
-                    newori = ori.S;
                     break;
-                case ori.S:
+                case ori.W:
 
                     newBody[0].set(fixpoint.x - 1, fixpoint.y - 1);
                     newBody[1].set(fixpoint.x, fixpoint.y - 1);
                     newBody[3].set(fixpoint.x, fixpoint.y + 1);
-
-                    newori = ori.W;
                     break;
-                case ori.W:
+                case ori.N:
 
                     newBody[0].set(fixpoint.x + 1, fixpoint.y - 1);
                     newBody[1].set(fixpoint.x + 1, fixpoint.y);
                     newBody[3].set(fixpoint.x - 1, fixpoint.y);
-
-                    newori = ori.N;
                     break;
             }
+
             result.setBody(newBody);
             result.orient = newori;
             return result;

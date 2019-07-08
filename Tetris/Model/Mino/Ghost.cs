@@ -38,6 +38,8 @@ namespace Tetris.Model.Mino
         }
 
 
-        public override Minos rotateClockwise(){ return null; }
+        public override Minos rotateClockwise(){ throw new NotImplementedException(); }
+
+        public override Minos rotateCounterClockwise(){ throw new NotImplementedException(); }
     }
 }

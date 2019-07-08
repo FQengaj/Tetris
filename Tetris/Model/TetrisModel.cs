@@ -28,7 +28,14 @@ namespace Tetris
             this.nextMino = newRandomMinos(3);
             //this.hold = newRandomMino();
             this.currMino = newRandomMino();
-            this.currMino.moveTo(startLocation);
+            if (currMino.GetType() == typeof(IMino))
+            {
+                this.currMino.moveTo(startLocation + (new Dim2D(0, -2)));
+            }
+            else
+            {
+                this.currMino.moveTo(startLocation);
+            }
             this.Ghost = new Ghost(currMino.getBody());
         }
 
@@ -65,10 +72,8 @@ namespace Tetris
 
         }
 
-        internal Minos rotateMino()
-        {
-            return currMino.rotateClockwise();
-        }
+        internal Minos rotateMinoClockwise(){ return currMino.rotateClockwise(); }
+        internal Minos rotateMinoCounterClockwise(){ return currMino.rotateCounterClockwise(); }
 
         internal Minos getCurrMino()
         {
@@ -104,8 +109,15 @@ namespace Tetris
                     this.hold = currMinoCopy;
 
                 }
-                
-                this.currMino.moveTo(startLocation);
+
+                if (currMino.GetType() == typeof(IMino))
+                {
+                    this.currMino.moveTo(startLocation + (new Dim2D(0, -2)));
+                }
+                else
+                {
+                    this.currMino.moveTo(startLocation);
+                }
                 this.swapable = false;
                 return true;
             }
@@ -237,7 +249,14 @@ namespace Tetris
             }
 
             this.currMino = this.nextMino[0];
-            this.currMino.moveTo(startLocation);
+            if (currMino.GetType() == typeof(IMino))
+            {
+                this.currMino.moveTo(startLocation + (new Dim2D(0, -2)));
+            }
+            else
+            {
+                this.currMino.moveTo(startLocation);
+            }
             this.nextMino[0] = this.nextMino[1];
             this.nextMino[1] = this.nextMino[2];
             this.nextMino[2] = newRandomMino();

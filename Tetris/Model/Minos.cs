@@ -55,12 +55,50 @@ namespace Tetris
             }
         }
 
+        internal ori getNextOrientation(bool direction)
+        {
+            if (direction == true) // Clockwise
+            {
+                switch (this.orient)
+                {
+                    case ori.N:
+                        return ori.W;
+                    case ori.E:
+                        return ori.N;
+                    case ori.S:
+                        return ori.E;
+                    case ori.W:
+                        return ori.S;
+                }
+            }
+            else
+            {
+                switch (this.orient)
+                {
+                    case ori.N:
+                        return ori.E;
+                    case ori.E:
+                        return ori.S;
+                    case ori.S:
+                        return ori.W;
+                    case ori.W:
+                        return ori.N;
+                }
+
+            }
+            return ori.N;
+        }
+
+
         public abstract Minos rotateClockwise();
+
+        public abstract Minos rotateCounterClockwise();
 
         protected void setBody(List<Dim2D> newBody)
         {
             this.body = newBody;
         }
+
         //public abstract Minos Clone();
 
     }
